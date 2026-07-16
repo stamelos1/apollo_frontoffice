@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Apollo FO">
+<title>Apollo Front Office — SOP & Training</title>
+<style>
+  :root {
+    --navy: #0A1628;
+    --navy-2: #0F1F3A;
+    --navy-3: #162847;
+    --navy-4: #1E3358;
+    --blue: #1A56DB;
+    --blue-light: #3B82F6;
+    --blue-glow: rgba(26,86,219,0.18);
+    --terra: #C4705A;
+    --terra-light: #F5EAE6;
+    --gold: #D4A84B;
+    --gold-dim: rgba(212,168,75,0.15);
+    --white: #FFFFFF;
+    --off-white: #F0F4FF;
+    --text-dim: #8BA3CC;
+    --text-mid: #B8CCE8;
+    --border: rgba(255,255,255,0.08);
+    --border-bright: rgba(255,255,255,0.15);
+    --radius: 10px;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--navy); color: var(--white); font-family: var(--font); min-height: 100vh; min-height: 100dvh; display: flex; overflow: hidden; }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 260px; min-width: 260px; background: var(--navy-2);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    height: 100vh; position: sticky; top: 0; overflow: hidden;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 16px; border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .hotel-name {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 2px;
+  }
+  .sidebar-logo .dept-name {
+    font-size: 18px; font-weight: 600; color: var(--white); line-height: 1.2;
+  }
+  .sidebar-logo .dept-sub {
+    font-size: 11px; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.04em;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex; border-bottom: 1px solid var(--border); padding: 0 12px;
+  }
+  .nav-tab {
+    flex: 1; padding: 10px 4px; font-size: 11px; font-weight: 600;
+    color: var(--text-dim); letter-spacing: 0.05em; cursor: pointer;
+    border-bottom: 2px solid transparent; text-align: center;
+    transition: color 0.2s, border-color 0.2s; text-transform: uppercase;
+  }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .nav-tab:hover:not(.active) { color: var(--text-mid); }
+
+  /* CHAPTER LIST */
+  #chapter-list { overflow-y: auto; flex: 1; padding: 8px 0; }
+  .chapter-item {
+    padding: 9px 20px; cursor: pointer; font-size: 13px; color: var(--text-mid);
+    border-left: 3px solid transparent; transition: all 0.15s; line-height: 1.3;
+  }
+  .chapter-item:hover { background: var(--navy-3); color: var(--white); }
+  .chapter-item.active { background: var(--navy-3); color: var(--white); border-left-color: var(--blue-light); }
+  .chapter-num { font-size: 10px; color: var(--text-dim); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 1px; text-transform: uppercase; }
+
+  /* SEARCH IN SIDEBAR */
+  .sidebar-search { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .sidebar-search input {
+    width: 100%; background: var(--navy-3); border: 1px solid var(--border-bright);
+    border-radius: 6px; padding: 7px 10px; color: var(--white); font-size: 12px;
+    outline: none; font-family: var(--font);
+  }
+  .sidebar-search input::placeholder { color: var(--text-dim); }
+  .sidebar-search input:focus { border-color: var(--blue-light); }
+
+  /* MAIN AREA */
+  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  /* TOP BAR */
+  #topbar {
+    background: var(--navy-2); border-bottom: 1px solid var(--border);
+    padding: 0 24px; display: flex; align-items: center; gap: 12px; height: 52px; flex-shrink: 0;
+  }
+  .topbar-title { font-size: 14px; font-weight: 600; color: var(--white); flex: 1; }
+  .mode-btn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border-bright);
+    background: transparent; color: var(--text-mid); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: var(--font);
+  }
+  .mode-btn.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+  .mode-btn:hover:not(.active) { background: var(--navy-3); color: var(--white); }
+
+  /* CONTENT AREA */
+  #content { flex: 1; overflow-y: auto; padding: 32px 40px; }
+
+  /* BOOK VIEW */
+  .book-header { margin-bottom: 32px; }
+  .book-section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--terra);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .book-title { font-size: 28px; font-weight: 700; color: var(--white); line-height: 1.2; margin-bottom: 10px; }
+  .book-rule { height: 1px; background: linear-gradient(90deg, var(--blue-light), transparent); margin-bottom: 24px; }
+
+  .sop-block { margin-bottom: 36px; }
+  .sop-code-title {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .sop-code { font-size: 11px; font-weight: 700; color: var(--blue-light); letter-spacing: 0.08em; text-transform: uppercase; }
+  .sop-title-text { font-size: 16px; font-weight: 600; color: var(--white); }
+  .scope-line {
+    font-size: 13px; color: var(--text-mid); margin-bottom: 14px; line-height: 1.6;
+    padding-left: 12px; border-left: 2px solid var(--terra); font-style: italic;
+  }
+  .sub-heading { font-size: 13px; font-weight: 700; color: var(--gold); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .step-list { list-style: none; counter-reset: steps; }
+  .step-list li {
+    counter-increment: steps; display: flex; gap: 12px; margin-bottom: 8px;
+    font-size: 13px; color: var(--text-mid); line-height: 1.65;
+  }
+  .step-list li::before {
+    content: counter(steps); min-width: 22px; height: 22px; background: var(--navy-4);
+    border: 1px solid var(--border-bright); border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 10px; font-weight: 700;
+    color: var(--blue-light); flex-shrink: 0; margin-top: 2px;
+  }
+  .bullet-list { list-style: none; }
+  .bullet-list li {
+    display: flex; gap: 10px; margin-bottom: 7px; font-size: 13px;
+    color: var(--text-mid); line-height: 1.65;
+  }
+  .bullet-list li::before { content: '—'; color: var(--terra); flex-shrink: 0; }
+  .note-box {
+    background: var(--navy-3); border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 12px 16px;
+    margin: 16px 0;
+  }
+  .note-label { font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 5px; text-transform: uppercase; }
+  .note-text { font-size: 13px; color: var(--text-mid); line-height: 1.65; font-style: italic; }
+
+  /* VIP TABLE */
+  .vip-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  .vip-table th { background: var(--navy-4); color: var(--text-dim); padding: 8px 10px; text-align: left; font-weight: 600; border: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .vip-table td { padding: 8px 10px; border: 1px solid var(--border); color: var(--text-mid); vertical-align: top; line-height: 1.5; }
+  .vip-table tr:nth-child(even) td { background: var(--navy-3); }
+  .vip-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
+  .badge-gold { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+  .badge-blue { background: var(--blue-glow); color: var(--blue-light); border: 1px solid var(--blue-light); }
+  .badge-mid { background: var(--navy-4); color: var(--text-mid); border: 1px solid var(--border-bright); }
+
+  /* DATA TABLE */
+  .data-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  .data-table th { background: var(--navy-4); color: var(--blue-light); padding: 8px 10px; text-align: left; font-weight: 600; border: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .data-table td { padding: 8px 10px; border: 1px solid var(--border); color: var(--text-mid); vertical-align: top; line-height: 1.5; }
+  .data-table tr:nth-child(odd) td { background: rgba(255,255,255,0.02); }
+
+  /* Q&A MODE */
+  #qa-panel { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  #chat-messages {
+    flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .msg { display: flex; gap: 12px; max-width: 780px; }
+  .msg.user { flex-direction: row-reverse; align-self: flex-end; }
+  .msg-avatar {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .msg.bot .msg-avatar { background: var(--blue); color: var(--white); }
+  .msg.user .msg-avatar { background: var(--navy-4); color: var(--gold); border: 1px solid var(--gold); }
+  .msg-bubble {
+    padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7;
+    max-width: 640px;
+  }
+  .msg.bot .msg-bubble { background: var(--navy-3); color: var(--text-mid); border: 1px solid var(--border); border-top-left-radius: 3px; }
+  .msg.user .msg-bubble { background: var(--blue); color: var(--white); border-top-right-radius: 3px; }
+  .msg-bubble strong { color: var(--white); font-weight: 600; }
+  .msg-bubble .sop-ref { color: var(--blue-light); font-size: 11px; margin-top: 8px; }
+
+  #chat-input-area {
+    padding: 16px 24px; border-top: 1px solid var(--border); background: var(--navy-2);
+    flex-shrink: 0;
+  }
+  .quick-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .qq-btn {
+    padding: 6px 12px; background: var(--navy-3); border: 1px solid var(--border-bright);
+    border-radius: 20px; color: var(--text-mid); font-size: 12px; cursor: pointer;
+    transition: all 0.15s; font-family: var(--font);
+  }
+  .qq-btn:hover { background: var(--navy-4); color: var(--white); border-color: var(--blue-light); }
+  .chat-row { display: flex; gap: 10px; }
+  .chat-input {
+    flex: 1; background: var(--navy-3); border: 1px solid var(--border-bright);
+    border-radius: 8px; padding: 11px 16px; color: var(--white); font-size: 13px;
+    outline: none; font-family: var(--font);
+  }
+  .chat-input::placeholder { color: var(--text-dim); }
+  .chat-input:focus { border-color: var(--blue-light); }
+  .send-btn {
+    padding: 11px 20px; background: var(--blue); border: none; border-radius: 8px;
+    color: var(--white); font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s; font-family: var(--font);
+  }
+  .send-btn:hover { background: var(--blue-light); }
+  .send-btn:disabled { background: var(--navy-4); cursor: not-allowed; }
+
+  .typing-dots { display: flex; gap: 4px; padding: 14px 16px; }
+  .typing-dots span {
+    width: 6px; height: 6px; background: var(--text-dim); border-radius: 50%;
+    animation: bounce 1.2s infinite; display: block;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  /* QUIZ MODE */
+  #quiz-panel { padding: 24px; max-width: 720px; margin: 0 auto; }
+  .quiz-header { text-align: center; margin-bottom: 32px; }
+  .quiz-score-bar { display: flex; justify-content: space-between; margin-bottom: 24px; align-items: center; }
+  .score-label { font-size: 12px; color: var(--text-dim); }
+  .score-val { font-size: 22px; font-weight: 700; color: var(--gold); }
+  .quiz-progress { height: 3px; background: var(--navy-4); border-radius: 2px; margin-bottom: 28px; }
+  .quiz-progress-fill { height: 100%; background: var(--blue-light); border-radius: 2px; transition: width 0.4s; }
+  .quiz-q { font-size: 16px; color: var(--white); font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+  .quiz-source { font-size: 11px; color: var(--text-dim); margin-bottom: 20px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .quiz-opt {
+    padding: 13px 16px; background: var(--navy-3); border: 1px solid var(--border-bright);
+    border-radius: var(--radius); color: var(--text-mid); font-size: 13px; cursor: pointer;
+    transition: all 0.15s; text-align: left; font-family: var(--font);
+  }
+  .quiz-opt:hover:not(:disabled) { background: var(--navy-4); color: var(--white); border-color: var(--blue-light); }
+  .quiz-opt.correct { background: rgba(16,185,129,0.12); border-color: #10B981; color: #10B981; }
+  .quiz-opt.wrong { background: rgba(239,68,68,0.12); border-color: #EF4444; color: #EF4444; }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback { padding: 12px 16px; border-radius: var(--radius); margin-bottom: 20px; font-size: 13px; line-height: 1.6; }
+  .quiz-feedback.ok { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #6EE7B7; }
+  .quiz-feedback.bad { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #FCA5A5; }
+  .quiz-next { width: 100%; padding: 12px; background: var(--blue); border: none; border-radius: var(--radius); color: var(--white); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+  .quiz-next:hover { background: var(--blue-light); }
+  .quiz-complete { text-align: center; padding: 40px 0; }
+  .quiz-final-score { font-size: 64px; font-weight: 800; color: var(--gold); line-height: 1; }
+  .quiz-final-label { font-size: 14px; color: var(--text-dim); margin: 8px 0 24px; }
+  .quiz-restart { padding: 12px 32px; background: var(--navy-3); border: 1px solid var(--border-bright); border-radius: var(--radius); color: var(--white); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+
+  /* SEARCH RESULTS */
+  .search-result { margin-bottom: 20px; }
+  .sr-ref { font-size: 11px; color: var(--blue-light); margin-bottom: 4px; font-weight: 700; letter-spacing: 0.05em; }
+  .sr-title { font-size: 15px; color: var(--white); font-weight: 600; margin-bottom: 6px; }
+  .sr-snippet { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
+  .sr-snippet mark { background: var(--gold-dim); color: var(--gold); border-radius: 2px; padding: 0 2px; }
+  .sr-divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* SCROLLBAR */
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE — Mobile / Tablet / Desktop
+  ═══════════════════════════════════════════ */
+
+  /* Mobile hamburger button */
+  #menu-toggle {
+    display: none; background: transparent; border: 1px solid var(--border-bright);
+    border-radius: 6px; color: var(--white); padding: 6px 10px; cursor: pointer;
+    font-size: 18px; line-height: 1; font-family: var(--font);
+  }
+
+  /* Sidebar overlay for mobile */
+  #sidebar-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 99; backdrop-filter: blur(2px);
+  }
+  #sidebar-overlay.visible { display: block; }
+
+  /* Tables: allow horizontal scroll on small screens */
+  .vip-table, .data-table {
+    display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  .vip-table td, .data-table td,
+  .vip-table th, .data-table th { white-space: normal; min-width: 80px; }
+
+  /* ── TABLET (≤900px) ── */
+  @media (max-width: 900px) {
+    body { flex-direction: column; }
+
+    #sidebar {
+      position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
+      z-index: 100; transition: left 0.28s ease; box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+    }
+    #sidebar.open { left: 0; }
+
+    #main { width: 100%; height: 100vh; }
+
+    #menu-toggle { display: flex; align-items: center; gap: 6px; font-size: 14px; padding: 6px 12px; }
+
+    #topbar { padding: 0 16px; gap: 10px; }
+    .topbar-title { font-size: 13px; }
+    .mode-btn { display: none; }
+
+    #content { padding: 20px 18px; }
+
+    .book-title { font-size: 22px; }
+    .sop-title-text { font-size: 15px; }
+
+    #chat-messages { padding: 16px; }
+    #chat-input-area { padding: 12px 16px; }
+    .quick-questions { display: none; }
+
+    #quiz-panel { padding: 16px; }
+    .quiz-q { font-size: 15px; }
+
+    .toc-grid { grid-template-columns: 1fr !important; }
+  }
+
+  /* ── MOBILE (≤600px) ── */
+  @media (max-width: 600px) {
+    #content { padding: 16px 14px; }
+
+    .book-title { font-size: 20px; }
+    .sop-code-title { flex-direction: column; gap: 4px; }
+    .sop-code { font-size: 10px; }
+    .sop-title-text { font-size: 14px; }
+
+    .step-list li, .bullet-list li { font-size: 13px; line-height: 1.7; }
+
+    .note-box { padding: 10px 12px; }
+    .note-text { font-size: 12px; }
+
+    /* Chat */
+    #chat-messages { padding: 12px; gap: 12px; }
+    .msg-bubble { font-size: 13px; padding: 10px 13px; max-width: calc(100vw - 80px); }
+    .msg-avatar { width: 28px; height: 28px; font-size: 11px; }
+    .chat-input { font-size: 16px; padding: 10px 12px; }
+    .send-btn { padding: 10px 14px; font-size: 13px; }
+
+    /* Quiz */
+    #quiz-panel { padding: 14px 12px; }
+    .quiz-q { font-size: 14px; }
+    .quiz-opt { font-size: 13px; padding: 12px 14px; }
+    .quiz-final-score { font-size: 52px; }
+    .score-val { font-size: 20px; }
+
+    /* VIP/Data tables on very small screens */
+    .vip-table th, .vip-table td,
+    .data-table th, .data-table td { font-size: 11px; padding: 6px 8px; }
+
+    /* TOC grid */
+    #toc-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+  }
+
+  /* ── LARGE DESKTOP (≥1400px) ── */
+  @media (min-width: 1400px) {
+    #sidebar { width: 300px; min-width: 300px; }
+    #content { padding: 40px 56px; }
+    .book-title { font-size: 32px; }
+    .sop-title-text { font-size: 17px; }
+    .step-list li, .bullet-list li { font-size: 14px; }
+  }
+
+  /* Touch targets — minimum 44px for iOS/Android */
+  @media (hover: none) and (pointer: coarse) {
+    .chapter-item { padding: 12px 20px; min-height: 44px; }
+    .nav-tab { padding: 12px 4px; min-height: 44px; }
+    .qq-btn { padding: 10px 14px; min-height: 44px; }
+    .quiz-opt { padding: 15px 16px; min-height: 52px; }
+    .send-btn { padding: 13px 20px; min-height: 48px; }
+    .chat-input { font-size: 16px; min-height: 48px; }
+    .quiz-next { min-height: 48px; }
+  }
+
+
+  /* ── PIN SCREEN ── */
+  #pin-screen {
+    position: fixed; inset: 0; background: #0A1628;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; flex-direction: column; gap: 0;
+  }
+  #pin-screen.hidden { display: none; }
+  .pin-logo {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    color: #D4A84B; text-transform: uppercase; margin-bottom: 10px; text-align: center;
+  }
+  .pin-title {
+    font-size: 24px; font-weight: 700; color: #FFFFFF;
+    margin-bottom: 6px; text-align: center;
+  }
+  .pin-sub {
+    font-size: 13px; color: #8BA3CC; margin-bottom: 36px; text-align: center;
+  }
+  .pin-box {
+    background: #0F1F3A; border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px; padding: 32px 36px; width: 320px; text-align: center;
+  }
+  .pin-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    color: #8BA3CC; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .pin-dots {
+    display: flex; justify-content: center; gap: 14px; margin-bottom: 24px;
+  }
+  .pin-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2); background: transparent;
+    transition: all 0.15s;
+  }
+  .pin-dot.filled { background: #D4A84B; border-color: #D4A84B; }
+  .pin-keypad {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 16px;
+  }
+  .pin-key {
+    background: #162847; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; color: #FFFFFF; font-size: 20px; font-weight: 500;
+    padding: 16px 0; cursor: pointer; transition: all 0.12s;
+    font-family: 'Segoe UI', system-ui, sans-serif; user-select: none;
+  }
+  .pin-key:active { background: #1E3358; transform: scale(0.95); }
+  .pin-key.del { font-size: 16px; color: #8BA3CC; }
+  .pin-key.empty { background: transparent; border-color: transparent; cursor: default; }
+  .pin-error {
+    font-size: 12px; color: #EF4444; min-height: 18px;
+    transition: opacity 0.3s; margin-top: 4px;
+  }
+  .pin-footer {
+    font-size: 11px; color: rgba(139,163,204,0.5); margin-top: 28px; text-align: center;
+  }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)}
+    60%{transform:translateX(-6px)}
+    80%{transform:translateX(6px)}
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--navy-4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--navy-3); }
+
+  .hidden { display: none !important; }
+  .text-center { text-align: center; }
+  .mt-4 { margin-top: 32px; }
+  .body-text { font-size: 13px; color: var(--text-mid); line-height: 1.7; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+
+<!-- PIN SCREEN -->
+<div id="pin-screen">
+  <div class="pin-logo">Apollo Corfu Resort</div>
+  <div class="pin-title">Front Office</div>
+  <div class="pin-sub">SOP Manual · Season 2026</div>
+  <div class="pin-box">
+    <div class="pin-label">Enter your PIN</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key empty"></button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+  <div class="pin-footer">For authorised Front Office staff only</div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="hotel-name">Apollo Corfu Resort</div>
+    <div class="dept-name">Front Office<br>SOP Manual</div>
+    <div class="dept-sub">AC-FO-SOP-01 · Season 2026</div>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="setTab('book')">Book</div>
+    <div class="nav-tab" onclick="setTab('qa')">Q&amp;A</div>
+    <div class="nav-tab" onclick="setTab('quiz')">Quiz</div>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" id="sidebar-search-input" placeholder="Search procedures..." oninput="handleSearch(this.value)">
+  </div>
+  <div id="chapter-list"></div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰ Menu</button>
+    <div class="topbar-title" id="topbar-title">Table of Contents</div>
+    <button class="mode-btn" onclick="scrollTop()">↑ Top</button>
+  </div>
+  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <div id="content">
+    <!-- BOOK PANEL -->
+    <div id="book-panel">
+      <div id="toc-view">
+        <div class="book-header">
+          <div class="book-section-label">Apollo Corfu Resort · Season 2026</div>
+          <div class="book-title">Front Office Standard<br>Operating Procedures</div>
+          <div class="book-rule"></div>
+          <div class="body-text">Prepared by Petros Faitas — Front Office Manager · Approved by Philippos Stamelos — General Manager · AC-FO-SOP-01</div>
+        </div>
+        <div id="toc-grid"></div>
+      </div>
+      <div id="chapter-view" class="hidden"></div>
+    </div>
+
+    <!-- Q&A PANEL -->
+    <div id="qa-panel" class="hidden">
+      <div id="chat-messages">
+        <div class="msg bot">
+          <div class="msg-avatar">A</div>
+          <div class="msg-bubble">
+            <strong>Welcome to Apollo Front Office Assistant.</strong><br><br>
+            I have full knowledge of AC-FO-SOP-01. Ask me anything about procedures, VIP protocols, check-in standards, complaint handling, night audit, or any other section. I'll answer based on the official 2026 manual.
+          </div>
+        </div>
+      </div>
+      <div id="chat-input-area">
+        <div class="quick-questions" id="quick-qs"></div>
+        <div class="chat-row">
+          <input class="chat-input" id="chat-input" placeholder="Ask about any procedure..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="send-btn" id="send-btn" onclick="sendMsg()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ PANEL -->
+    <div id="quiz-panel" class="hidden"></div>
+  </div>
+</div>
+
+<script>
+const SOP = {
+  chapters: [
+    { id:"s01", num:"01", title:"Reservations & Bookings",
+      sops:[
+        { code:"SOP-01.01", title:"Guaranteed Booking",
+          scope:"To ensure all bookings are secured through online payment prior to the guest's check-in date.",
+          subsections:[
+            {type:"steps", items:[
+              "Upon receiving a booking payment online, post it immediately in Pylon Epsilon (PMS) as a reservation advance deposit. Issue a payment confirmation to the guest.",
+              "A guaranteed booking protects against no-show. If the guest fails to arrive without cancelling, the deposit is forfeited per the hotel's no-show policy.",
+              "The advance deposit required at the time of booking is 20% of the total booking amount.",
+              "Accepted payment methods: online credit or debit card payment · bank transfer · authorised company billing agreement (acknowledged by the Finance Manager).",
+              "Any booking not secured by 18:00 on the day of arrival may be released at the Front Office Manager's discretion. The Reservations team must be notified before any release.",
+              "No booking is marked 'guaranteed' in the PMS unless the online deposit payment has been received and confirmed."
+            ]},
+            {type:"note", label:"STANDARD", text:"No booking is confirmed without a verified online payment on file. Verbal commitments are never accepted as a guarantee."}
+          ]
+        },
+        { code:"SOP-01.02", title:"Day Use Room",
+          scope:"To ensure all day use room requests are correctly handled, recorded in the PMS, and charged at the correct flat rate.",
+          subsections:[
+            {type:"steps", items:[
+              "Day use rooms are available from 11:00 to 18:00. The standard day use rate is €50, applicable to all room categories.",
+              "A day use room is not counted as a room-night sold. It must be checked in and out on the same calendar date in Pylon Epsilon (PMS).",
+              "During high-occupancy periods, day use rooms cannot be guaranteed in advance. Availability is confirmed only at the hotel's standard check-in time of 15:00.",
+              "If the guest requires check-out beyond 18:00, the standard overnight rate applies.",
+              "All standard credit and payment procedures apply as per FIT check-in.",
+              "Record in the Reception Log Book: guest name · room number · check-in and check-out times · rate applied."
+            ]}
+          ]
+        },
+        { code:"SOP-01.03", title:"Group Booking Handling",
+          scope:"To ensure all group reservations are managed with precision and the group arrival is seamless.",
+          subsections:[
+            {type:"body", text:"A group is defined as four (4) or more rooms travelling together under a single booking reference or group master folio."},
+            {type:"steps", items:[
+              "Upon confirmation, create a Group Master Profile in Pylon Epsilon (PMS): group name · tour operator · contact person · arrival/departure dates · room block · meal plan · special requests · ETA.",
+              "A signed rooming list must be received no later than 7 days prior to arrival.",
+              "A deposit of 30% of the total booking amount is required to confirm and secure the group block. Full payment must be completed no later than 20 days prior to arrival.",
+              "Standardise group room allocation to specific floors or wings to avoid mixing with FIT guests.",
+              "A complimentary room may be offered at the hotel's discretion and subject to the agreed contractual conditions.",
+              "All meal requirements, dietary restrictions, and special requests must be communicated via a pre-arrival briefing sheet no later than 48 hours before arrival.",
+              "On the day of arrival, prepare all key packets at least 3 hours before ETA."
+            ]},
+            {type:"note", label:"IMPORTANT", text:"All group-related communication must be in writing. Verbal group instructions are not accepted as confirmed."}
+          ]
+        },
+        { code:"SOP-01.04", title:"Reservation Confirmation",
+          scope:"To ensure all reservation correspondence is responded to within 48 hours and every confirmation contains complete and accurate information.",
+          subsections:[
+            {type:"steps", items:[
+              "All reservation requests must receive a written response within 48 hours or the next available business day.",
+              "Confirmation letters must use official Apollo Corfu Resort letterhead and include: guest name · room type · rate · dates · meal plan · number of guests · confirmation number.",
+              "If the request is for availability only, advise available room types and rates without creating a reservation.",
+              "Online payment details or advance deposit instructions must be shared with every new confirmation.",
+              "All confirmation correspondence must be filed — physically and digitally — on the day it is processed."
+            ]}
+          ]
+        },
+        { code:"SOP-01.05", title:"Reservation Cancellation",
+          scope:"To ensure all cancellations are processed accurately per Apollo Corfu Resort's cancellation policy.",
+          subsections:[
+            {type:"steps", items:[
+              "Obtain the guest's name and reservation number. Retrieve the booking in the PMS and verify all details before proceeding.",
+              "For non-guaranteed reservations: cancel immediately, record the reason, and provide the caller with the cancellation number.",
+              "For guaranteed reservations: apply the cancellation policy as stated in the booking conditions. Inform the guest of any charges before processing.",
+              "Written authorisation from the cardholder is required before charging a retention fee.",
+              "Ask the guest if they wish to rebook for alternative dates."
+            ]}
+          ]
+        },
+        { code:"SOP-01.06", title:"Waitlist Reservation",
+          scope:"To manage demand during fully-booked periods and convert waitlisted guests to confirmed bookings when availability arises.",
+          subsections:[
+            {type:"steps", items:[
+              "When the hotel is fully booked, politely inform the guest and offer to place them on the waitlist.",
+              "Record in the Pylon Epsilon (PMS) Waitlist: guest name · contact number · email · requested dates · room type · meal plan.",
+              "Proactively offer alternative dates or adjacent room categories.",
+              "Review the waitlist daily. Upon any cancellation, contact waitlisted guests immediately in registration order.",
+              "Once converted to a confirmed booking, follow SOP-01.04 for confirmation."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s02", num:"02", title:"Arrivals & Check-in",
+      sops:[
+        { code:"SOP-02.01", title:"Checking Next Day's Arrivals",
+          scope:"To ensure all arriving guests the following day have been reviewed and all arrangements are confirmed by 18:00.",
+          subsections:[
+            {type:"subh", text:"To be completed by 18:00 daily"},
+            {type:"steps", items:[
+              "Print and review the next day's Arrival Report from Pylon Epsilon (PMS). The Front Office Manager and the Reservations team must both review this report.",
+              "Check for and correct: duplicate bookings · misspelled names · incorrect rate codes · missing ETA · incomplete special requests.",
+              "Verify each booking is properly secured through online payment. All unconfirmed bookings must be followed up by 18:00.",
+              "Review all VIP arrivals and confirm with the Guest Experience team that pre-arrival contact has been made and amenities ordered.",
+              "Confirm all rooms with special requests have been specifically pre-assigned — not just category-blocked.",
+              "Brief the incoming afternoon and night shifts on critical arrivals and any operational challenges anticipated."
+            ]}
+          ]
+        },
+        { code:"SOP-02.02", title:"Pre-Registration",
+          scope:"To ensure guests requiring early arrival are properly pre-registered in the PMS and the room is secured.",
+          subsections:[
+            {type:"steps", items:[
+              "Pre-registration requires booking the room from the previous night. A full night's accommodation charge applies unless otherwise agreed in writing.",
+              "All pre-registration requests must be in writing (email or letter) and attached to the reservation file.",
+              "Enter 'PRE-REG' after the guest's surname in Pylon Epsilon (PMS) to indicate the room is blocked but the guest has not yet arrived.",
+              "Confirm room-ready status with Housekeeping no later than one hour before the guest's ETA.",
+              "Upon the guest's physical arrival, remove the 'PRE-REG' designation immediately and complete the check-in."
+            ]}
+          ]
+        },
+        { code:"SOP-02.03", title:"Check-in — FIT & Corporate",
+          scope:"To ensure all FIT and Corporate guests are checked in smoothly and in accordance with Apollo Corfu Resort standards.",
+          subsections:[
+            {type:"subh", text:"Pre-arrival preparation"},
+            {type:"bullets", items:[
+              "Confirm the assigned room is Vacant Clean Inspected (VCI) in the PMS.",
+              "Verify the room type matches the reservation exactly.",
+              "Check for any in-room amenities, special setups, or welcome arrangements.",
+              "Pre-print the registration card and confirm all details are accurate."
+            ]},
+            {type:"subh", text:"Check-in procedure"},
+            {type:"steps", items:[
+              "Greet the guest warmly and address them by surname: 'Welcome to Apollo Corfu, Mr./Ms. [surname].'",
+              "Locate the reservation in Pylon Epsilon (PMS). Confirm guest name, room type, dates, meal plan, and rate (for FIT only).",
+              "Present the registration card for the guest to review and sign.",
+              "Request the guest's identity document for verification, for scanning and adding it to Pylon Epsilon (PMS). Handle and return it promptly and discreetly.",
+              "Request the method of payment. Credit card: process pre-authorisation in Pylon Epsilon. Cash: collect deposit, issue receipt, post in Pylon Epsilon immediately.",
+              "Confirm the room number and provide a concise overview of key facilities.",
+              "Present the room key card in the holder. Never announce the room number aloud in a public area.",
+              "Offer to escort the guest to the room. For Superior rooms and above, escort is the Apollo Corfu standard unless the guest declines.",
+              "If the room is not yet ready, take the guest's mobile number via WhatsApp and invite them to enjoy all hotel facilities — the pool, beach, restaurants, and bars — until their room is prepared."
+            ]},
+            {type:"note", label:"STANDARD", text:"Every guest must be addressed by name at least three times during check-in. The use of 'sir' or 'madam' as a substitute for the guest's name is not accepted."}
+          ]
+        },
+        { code:"SOP-02.04", title:"Check-in — VIP",
+          scope:"To ensure all VIP guests receive a seamless, personalised, and memorable arrival experience.",
+          subsections:[
+            {type:"body", text:"Apollo Corfu Resort recognises four (4) VIP categories, each with a defined level of attention, pre-arrival preparation, and amenity programme."},
+            {type:"subh", text:"Pre-arrival (3–5 days before arrival)"},
+            {type:"bullets", items:[
+              "VIP 1 Platinum: General Manager places a personal call to confirm arrangements.",
+              "VIP 2 Premium, VIP 3 & VIP 4: The Guest Experience team places the pre-arrival contact.",
+              "Confirm: room assignment · amenity order · transportation · dietary restrictions."
+            ]},
+            {type:"subh", text:"VIP amenity programme"},
+            {type:"vip-table"},
+            {type:"subh", text:"Additional VIP entitlements"},
+            {type:"bullets", items:[
+              "VIP 1 Platinum: Upgraded minibar selection · daily turndown with sweet treat · complimentary spa access.",
+              "VIP 2 Premium: Minibar with soft drinks · daily turndown service · complimentary spa access.",
+              "VIP 3 & VIP 4: Daily turndown service · complimentary spa access."
+            ]}
+          ]
+        },
+        { code:"SOP-02.05", title:"Check-in — Groups",
+          scope:"To ensure group arrivals are handled efficiently with minimal wait and all luggage delivered correctly.",
+          subsections:[
+            {type:"steps", items:[
+              "Confirm with Housekeeping by 11:00 on arrival day that all group rooms are VCI.",
+              "Prepare all room key packets at least 3 hours before ETA.",
+              "The Front Office Manager supervises the entire group check-in process.",
+              "Receive the group in the lobby with a welcome briefing and, where contracted, welcome drinks and cold towels.",
+              "Distribute key packets individually per the rooming list. Check off each name upon distribution.",
+              "Tag all luggage with room number and guest name. Organise by wing and floor before beginning delivery."
+            ]}
+          ]
+        },
+        { code:"SOP-02.06", title:"Room Allocation — Upgrade & Downgrade",
+          scope:"To ensure every guest receives the room type reserved and any variation is handled professionally.",
+          subsections:[
+            {type:"subh", text:"Allocation principles"},
+            {type:"bullets", items:[
+              "Room allocation must begin no later than 09:00 daily for same-day arrivals.",
+              "Guaranteed confirmed bookings are allocated first.",
+              "Single female travellers must not be assigned interconnecting rooms.",
+              "Problematic rooms must be allocated last and only for minimum length of stay."
+            ]},
+            {type:"subh", text:"Upgrade"},
+            {type:"steps", items:[
+              "Upgrades require Front Office Manager approval.",
+              "Present as a benefit: 'Mr./Ms. [surname], I am pleased to welcome you with a complimentary upgrade to a [room type] for your stay.'"
+            ]},
+            {type:"subh", text:"Downgrade"},
+            {type:"steps", items:[
+              "A downgrade must be communicated before the guest reaches the room. The Front Office Manager must speak to the guest personally.",
+              "Adjust the rate to reflect the actual room type provided. Under no circumstances is a guest charged for a higher category than what was assigned."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s03", num:"03", title:"Guest Experience & Amenities",
+      sops:[
+        { code:"SOP-03.01", title:"Special Offers & Guest Amenities",
+          scope:"To ensure all special offers and guest amenities are organised, communicated, prepared, and delivered with the warmth and personalisation that defines Apollo Corfu Resort.",
+          subsections:[
+            {type:"subh", text:"Daily Special Offers Sheet"},
+            {type:"body", text:"The Special Offers Sheet is the official operational document governing all amenities for the day. The Guest Experience team is responsible for its compilation and distribution."},
+            {type:"steps", items:[
+              "The Special Offers Sheet must be completed and distributed digitally via the hotel's designated apps no later than 18:00 of the previous day.",
+              "Once distributed before 18:00, the sheet is officially approved and must be executed the following morning.",
+              "The original Reception copy remains at the Front Desk as the official delivery control document, bearing the handwritten signature of the responsible Chef."
+            ]},
+            {type:"subh", text:"Amenity types & timing"},
+            {type:"bullets", items:[
+              "Welcome & VIP Amenity — placed in room before arrival and before room handover to guest.",
+              "Birthday / Anniversary / Celebration — confirmed by 18:00 previous day, delivered at scheduled time.",
+              "SYS (See You Soon) — placed on the last evening of stay — farewell experience.",
+              "Daily VIP Refresh — as per VIP Treatment Plan, daily rotation per VIP level."
+            ]},
+            {type:"note", label:"PHILOSOPHY", text:"Every amenity represents Apollo Corfu Resort. It is not a delivery — it is a hospitality moment. Presentation, timing, and personalisation are non-negotiable."}
+          ]
+        },
+        { code:"SOP-03.02", title:"Complaint Handling",
+          scope:"To ensure every guest complaint is received professionally, resolved effectively, and followed up thoroughly.",
+          subsections:[
+            {type:"steps", items:[
+              "Upon receiving a complaint, acknowledge the guest immediately. If the guest is upset, discreetly invite them to a private area. Never address a complaint in a public space.",
+              "Listen fully without interrupting. Take notes. Allow the guest to express themselves completely before you respond.",
+              "Apologise sincerely: 'I completely understand, Mr./Ms. [surname], and I sincerely apologise for the inconvenience.'",
+              "Do not argue. Do not challenge the guest's version. Do not place blame on another department in the guest's presence.",
+              "Communicate what action you will take and provide a realistic timeframe. Escalate to the Front Office Manager if necessary.",
+              "Act immediately. Follow up with a personal courtesy call within 2 hours of resolution.",
+              "Log every complaint in the GEX Journal and Exclusivi App: guest name · room number · date/time · nature of complaint · action taken · outcome.",
+              "Analyse complaint patterns weekly. Recurring issues must be reported to the Front Office Manager and General Manager."
+            ]},
+            {type:"note", label:"STANDARD", text:"Never use the phrase 'it is hotel policy' as an explanation. Guests are not interested in our policies — they are interested in their experience. Find a solution, not an excuse."}
+          ]
+        },
+        { code:"SOP-03.03", title:"Room Change",
+          scope:"To ensure room changes are handled efficiently without unnecessary inconvenience to the guest.",
+          subsections:[
+            {type:"steps", items:[
+              "Complete a Room Move Form: guest name · current room · new room · reason · date and time · authorising manager.",
+              "Verify the new room is the same category or better. Never downgrade without consent and rate adjustment.",
+              "Inspect the new room personally before communicating to the guest. It must be VCI.",
+              "All room changes require explicit Front Office Manager approval.",
+              "Assign a Bellman to transfer luggage. Never move guest items without the guest's knowledge.",
+              "Update Pylon Epsilon (PMS) immediately. Notify Housekeeping to clean the vacated room."
+            ]}
+          ]
+        },
+        { code:"SOP-03.04", title:"Do Not Disturb Room",
+          scope:"To balance respect for guest privacy with the hotel's duty of care.",
+          subsections:[
+            {type:"steps", items:[
+              "Housekeeping must report all DND rooms to the Front Office Manager at every shift. If a room has displayed DND for more than 12 hours, investigate.",
+              "Front Office Manager calls the room. If the guest answers, confirm everything is satisfactory.",
+              "If no answer after two calls at 30-minute intervals, assemble the Housekeeping Manager and Security and proceed to the room.",
+              "Room entry requires a minimum of two witnesses. Announce the hotel's presence before opening.",
+              "If guest is unwell: call house doctor immediately. Notify Front Office Manager and General Manager.",
+              "If guest is found deceased: do not touch anything. Contact Chief Security, house doctor, General Manager, and Local Police."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s04", num:"04", title:"Departures & Check-out",
+      sops:[
+        { code:"SOP-04.01", title:"Check-out — FIT & Corporate",
+          scope:"To ensure all FIT and Corporate departures are processed accurately and every guest departs with a warm farewell.",
+          subsections:[
+            {type:"note", label:"DAILY TASK", text:"The Front Office Manager must daily verify credit card authorisations and deposits for all in-house guests. Any guest with insufficient coverage must be contacted personally before they reach the desk."},
+            {type:"subh", text:"Check-out procedure"},
+            {type:"steps", items:[
+              "Greet the departing guest warmly by name. Ask if they have enjoyed their stay.",
+              "Enquire about minibar consumption since the last posting. Post any additional charges before presenting the folio.",
+              "Present the folio. Allow adequate time for review and answer questions professionally.",
+              "Process settlement per the agreed payment method. Issue receipt.",
+              "Collect room key cards. Deactivate immediately in the key system.",
+              "All staff on duty must bid farewell: 'Thank you, Mr./Ms. [surname]. We hope to welcome you back to Apollo Corfu very soon.'"
+            ]}
+          ]
+        },
+        { code:"SOP-04.02", title:"Check-out — VIP",
+          scope:"To ensure VIP departures reflect the same level of personalised care as their arrival.",
+          subsections:[
+            {type:"subh", text:"Day before departure"},
+            {type:"steps", items:[
+              "Front Office Manager places a personal courtesy call to confirm: departure time · transportation · method of payment.",
+              "Prepare the folio in advance. Review all charges. Must be clean and accurate before the guest approaches.",
+              "For applicable VIP categories: confirm that the SYS amenity and a personalised gift bag have been placed in the room."
+            ]},
+            {type:"subh", text:"Post-departure"},
+            {type:"steps", items:[
+              "A personalised thank-you message is sent within 24 hours on behalf of the Apollo Team, signed warmly by the Guest Experience office. Must reference a specific detail of the guest's stay.",
+              "Update the guest history profile in Pylon Epsilon (PMS): VIP level · preferences · special requests · service recoveries · return likelihood."
+            ]}
+          ]
+        },
+        { code:"SOP-04.03", title:"Check-out — Groups",
+          scope:"To ensure all group members are checked out systematically and all folios are settled correctly.",
+          subsections:[
+            {type:"steps", items:[
+              "Front Office Manager reviews the Group Movement Sheet against all individual member folios the evening before departure.",
+              "On departure day, assign dedicated staff for group checkout — do not merge with the general reception queue.",
+              "Ask each group member about minibar consumption and post charges manually as needed.",
+              "After all individual folios are settled, review the Group Master Folio. Verify no personal charges appear on the master.",
+              "Settle the Master Folio per the agreed method: voucher · credit card · company charge-back."
+            ]}
+          ]
+        },
+        { code:"SOP-04.04", title:"Guest Transportation",
+          scope:"To ensure all transportation requests are accurately recorded in the hotel PMS and executed on time.",
+          subsections:[
+            {type:"steps", items:[
+              "Document all requests directly in Pylon Epsilon (PMS): guest name · room number · date · flight number · arrival/departure time · number of passengers · vehicle type.",
+              "Assign driver and vehicle the day before the requested service. Communicate to all parties.",
+              "Confirm the pickup time with the guest personally the day before or morning of service.",
+              "The vehicle must be at the reception desk at least 10 minutes before the guest's scheduled pickup time."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s05", num:"05", title:"Luggage & Front Service",
+      sops:[
+        { code:"SOP-05.01", title:"Incoming Luggage",
+          scope:"To ensure all arriving guest luggage is properly handled, tagged, recorded, and delivered within the specified timeframe.",
+          subsections:[
+            {type:"steps", items:[
+              "Offer assistance proactively to every arriving guest — do not wait to be asked.",
+              "Greet the guest, take their luggage with consent, and tag each piece: guest name · room number · number of pieces.",
+              "Record on the Incoming Luggage Record Form: guest name · room number · pieces · tag numbers · time received.",
+              "All luggage must be delivered to the room within 10 minutes of the key being issued. The Apollo Corfu target is 5 minutes.",
+              "In the room: place luggage on rack or neatly at the foot of the bed. Hang all hanging items in the wardrobe."
+            ]}
+          ]
+        },
+        { code:"SOP-05.02", title:"Luggage Storage",
+          scope:"To ensure stored luggage is properly recorded, securely held, and returned only to the authorised guest.",
+          subsections:[
+            {type:"steps", items:[
+              "Tag all stored items with a two-part storage tag. Give the receipt portion to the guest.",
+              "Record on the Luggage Storage Record: guest name · check-out status · pieces · tag number · date/time in.",
+              "Store neatly and securely. Luggage storage accessible 24 hours.",
+              "Release luggage only upon presentation of the receipt stub. Front Office Manager authorisation required if stub is lost.",
+              "Never open guest luggage without the guest physically present."
+            ]}
+          ]
+        },
+        { code:"SOP-05.03", title:"Outgoing Luggage",
+          scope:"To ensure all departing guest luggage is removed promptly and loaded correctly.",
+          subsections:[
+            {type:"steps", items:[
+              "Respond to all departure assistance requests within 5 minutes.",
+              "Confirm with the guest which items are to be removed. Handle fragile items with particular care.",
+              "When loading into a vehicle: keep the boot open until the guest confirms all items are loaded."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s06", num:"06", title:"Financial Procedures",
+      sops:[
+        { code:"SOP-06.01", title:"Housebank Control",
+          scope:"To maintain the accuracy and security of each cashier's housebank on a shift-by-shift basis.",
+          subsections:[
+            {type:"steps", items:[
+              "Each cashier holds a personal float set by the Finance Manager. It must be maintained at the correct balance at all times.",
+              "At every shift handover, outgoing and incoming cashiers count the float together and both sign the Housebank Float Form.",
+              "Every transaction or movement of money must be recorded in the individual Housebank Log Book.",
+              "The Front Office Manager physically inspects each cashier's housebank against the log book at the end of every shift.",
+              "The Finance Department may conduct unannounced spot inspections."
+            ]}
+          ]
+        },
+        { code:"SOP-06.02", title:"Handling a Payment Difficulty",
+          scope:"To handle any payment difficulty with complete warmth and professionalism, ensuring the guest always feels respected.",
+          subsections:[
+            {type:"steps", items:[
+              "If a payment cannot be processed at the desk, warmly and discreetly invite the guest to step to one side.",
+              "With a smile and calm tone: 'I'm afraid I wasn't able to process this card — it may simply be a bank authorisation issue. May I try a different card, or would you prefer to contact your bank?'",
+              "Never use words like 'declined' or 'rejected' in the guest's presence.",
+              "If no alternative card is available, offer the option of a cash deposit with full courtesy.",
+              "If a payment concern arises before departure, the Front Office Manager contacts the guest personally, allowing adequate time — ideally 24 hours in advance."
+            ]},
+            {type:"note", label:"HOSPITALITY STANDARD", text:"Keep the conversation private, warm, and solution-focused at all times. We are here to help our guests, not to create discomfort."}
+          ]
+        },
+        { code:"SOP-06.03", title:"Shortage & Overage",
+          scope:"To ensure any cash discrepancy is reported immediately, investigated, and resolved per hotel policy.",
+          subsections:[
+            {type:"steps", items:[
+              "Any discrepancy must be reported to the Front Office Manager immediately. The cashier completes and signs a Shortage/Overage Report before leaving their shift.",
+              "The completed report is submitted to the Finance Department. The Front Office Manager authorises all reports.",
+              "If a guest was given an incorrect cash amount, the Front Office Manager contacts the guest to correct the error.",
+              "Recurring discrepancies will be addressed through the hotel's disciplinary procedure per Greek labour law."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s07", num:"07", title:"Night Audit & EOD",
+      sops:[
+        { code:"SOP-07.01", title:"Shift Commencement",
+          scope:"To begin the Night Audit shift with a full picture of hotel status.",
+          subsections:[
+            {type:"steps", items:[
+              "Take a thorough handover from the evening shift. Read the Reception Log Book in full.",
+              "Count the cash float with the outgoing cashier. Both sign the Housebank Float Form.",
+              "Open the Night Audit cashier in Pylon Epsilon (PMS).",
+              "Print and review: Pending Traces · High-Balance Guest Report · Arrivals with Special Requests · Departure List · Room Discrepancy Report.",
+              "Clear all outstanding traces before proceeding."
+            ]}
+          ]
+        },
+        { code:"SOP-07.02", title:"F&B Outlet Balancing",
+          scope:"To ensure all F&B revenues are correctly captured in the PMS.",
+          subsections:[
+            {type:"steps", items:[
+              "As each outlet closes, the Supervisor hands over check copies and drops cash at the Front Desk.",
+              "Print the outlet-by-outlet revenue report from Pylon Epsilon (PMS) and match against the POS system report.",
+              "Post any missing checks manually. Void duplicate postings with Front Office Manager authorisation.",
+              "Tally all cash drops. Prepare paidout entries for restaurant credit card tips.",
+              "Once all outlets are balanced, check out the Payment Master rooms."
+            ]}
+          ]
+        },
+        { code:"SOP-07.03", title:"EOD Execution",
+          scope:"To complete the End of Day process accurately and transition the hotel to the next business date.",
+          subsections:[
+            {type:"subh", text:"Pre-EOD checklist — all must be confirmed"},
+            {type:"bullets", items:[
+              "All cash registers CLOSED.",
+              "No pending departures remain open.",
+              "No non-guaranteed arrivals remain open (including group masters).",
+              "Printer with sufficient paper connected to EOD terminal.",
+              "All other workstations logged out.",
+              "All F&B outlets informed not to settle checks during EOD."
+            ]},
+            {type:"steps", items:[
+              "Close all cash registers. Print and sign the Cash Register Closure Report.",
+              "Complete the Credit Card Reconciliation Form. Both Pylon Epsilon (PMS) total and terminal total must balance exactly.",
+              "Run the End of Day process. Print and file all EOD reports.",
+              "Distribute the Night Audit summary to the General Manager and Front Office Manager before 08:00."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s08", num:"08", title:"Emergency Procedures",
+      sops:[
+        { code:"SOP-08.01", title:"Fire Emergency",
+          scope:"Emergency procedures in case of fire.",
+          subsections:[
+            {type:"note", label:"CRITICAL", text:"Internal emergency line: 888. External emergency in Greece: 112. Police: 100."},
+            {type:"steps", items:[
+              "The telephone operator remains at the switchboard at all times. Follow the instructions of the General Manager and Chief Fire Warden exclusively.",
+              "Activate the fire alarm if not already triggered. Do not use lifts. Direct guests to emergency exits and assembly points.",
+              "Complete an Incident Report after the event."
+            ]}
+          ]
+        },
+        { code:"SOP-08.02", title:"Guest Accident or Incident",
+          scope:"All serious incidents must be documented on an official Incident and Accident Report, copied to the General Manager.",
+          subsections:[
+            {type:"subh", text:"Hotel responsibility"},
+            {type:"body", text:"Where the hotel holds any degree of responsibility for the incident or accident, the hotel will call the doctor immediately and cover all associated medical fees. This is non-negotiable."},
+            {type:"subh", text:"Required report documentation"},
+            {type:"bullets", items:[
+              "Full guest details: name · address · room number · contact numbers.",
+              "Date, time, and exact location of the incident.",
+              "Full description of the event.",
+              "Nature and extent of injuries. Whether doctor, ambulance, or hospitalisation was involved.",
+              "All actions taken by hotel staff — in sequence with timestamps.",
+              "Police involvement: officer's name and badge number if applicable."
+            ]},
+            {type:"steps", items:[
+              "The report must be signed and dated by the Front Office Manager. Copy to General Manager only.",
+              "Under no circumstances is a copy given to the guest — except under a valid court order.",
+              "Any hotel correspondence regarding the incident must be headed WITHOUT PREJUDICE."
+            ]}
+          ]
+        },
+        { code:"SOP-08.03", title:"Undesirable or Suspicious Persons",
+          scope:"To maintain the safety and security of hotel premises and all guests.",
+          subsections:[
+            {type:"steps", items:[
+              "If a suspicious person is observed, notify the Front Office Manager and Security immediately.",
+              "Always begin by warmly and discreetly asking the person's name and room number, then verify against Pylon Epsilon (PMS). This must always be done respectfully and without assumption.",
+              "If confirmed as a registered guest, apologise graciously for the interruption and wish them a pleasant stay.",
+              "If not a registered guest, politely ask them to leave and escort out with Security."
+            ]}
+          ]
+        },
+        { code:"SOP-08.04", title:"Intoxicated or Difficult Guest",
+          scope:"To handle difficult situations with calm, hospitality, and absolute discretion.",
+          subsections:[
+            {type:"steps", items:[
+              "Handle all situations with calm, patience, and absolute discretion. Do not react to provocation.",
+              "If a guest appears to have had too much to drink, approach them warmly. Avoid serving further alcohol and instead kindly offer water or a soft drink: 'Mr./Ms. [surname], may I offer you something refreshing? Let's find a more comfortable spot.'",
+              "Do not use physical force unless there is an immediate threat to safety, in which case Security must be called immediately.",
+              "Complete an Incident Report for any such interaction."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s09", num:"09", title:"Communication Standards",
+      sops:[
+        { code:"SOP-09.01", title:"Telephone Etiquette",
+          scope:"To ensure every telephone interaction reflects Apollo Corfu Resort's warmth, professionalism, and commitment to personalised service.",
+          subsections:[
+            {type:"note", label:"STANDARD PHRASES", text:'External: "Good [Morning/Afternoon/Evening], Apollo Corfu Resort, how may I help you?"\n\nInternal guest: "Good [Morning/Afternoon/Evening], Mr./Ms. [surname], this is [your first name] speaking, how may I help you?"\n\nTransferring: "Mr./Ms. [surname], I will transfer your call now with pleasure. One moment please."'},
+            {type:"bullets", items:[
+              "Answer all calls within three rings.",
+              "Always smile — guests can hear it. Use a calm, clear voice.",
+              "Always address the guest by surname, not 'sir' or 'madam.'",
+              "Never place a guest on hold for more than 60 seconds without returning with an update.",
+              "Never transfer a guest without briefing the receiving department. A guest must never have to repeat themselves."
+            ]}
+          ]
+        },
+        { code:"SOP-09.02", title:"Shift Handover",
+          scope:"To ensure every shift transition is seamless and fully informed.",
+          subsections:[
+            {type:"steps", items:[
+              "Arrive at the desk at the correct time. Never be late for a handover.",
+              "Read the Reception Log Book in full: unusual events · complaints · pending requests · VIP movements · credit concerns.",
+              "Print and review: Pending Traces · Arrival Report · Departure Report · Room Discrepancy Report · Guest account balances.",
+              "Count all cash with the outgoing cashier. Both sign the Housebank Float Form.",
+              "Confirm the reception desk is clean, organised, and free of clutter before the outgoing team leaves."
+            ]}
+          ]
+        },
+        { code:"SOP-09.03", title:"Key Control",
+          scope:"To ensure room key cards are issued only to authorised persons.",
+          subsections:[
+            {type:"steps", items:[
+              "Request the guest's name and room number. Cross-reference against Pylon Epsilon (PMS) to confirm the guest exists in the system before proceeding.",
+              "If details match: issue the key and address the guest by name.",
+              "If any discrepancy: request a government-issued photo ID. Do not issue a key without verification.",
+              "If a guest refuses to verify identity: do not issue the key. Inform the Front Office Manager immediately.",
+              "If a guest reports a lost key: deactivate the existing key immediately and issue a replacement with a new code.",
+              "Room numbers must never be written on key cards or holders that may be carried separately."
+            ]}
+          ]
+        }
+      ]
+    },
+    { id:"s10", num:"10", title:"Hotel Knowledge 2026",
+      sops:[
+        { code:"10.01", title:"Room Categories — Season 2026",
+          scope:"All Front Office staff must know every room category by name, size, features, and location. This information must be memorised, not looked up at the desk.",
+          subsections:[
+            {type:"room-table"}
+          ]
+        },
+        { code:"10.02", title:"F&B Packages — Season 2026",
+          scope:"Complete knowledge of All Inclusive and Half Board packages.",
+          subsections:[
+            {type:"subh", text:"All Inclusive (AI) Package"},
+            {type:"bullets", items:[
+              "Breakfast: Main Restaurant 07:00–10:30 / Asador Quiet Zone 08:00–12:00.",
+              "Lunch: Main Restaurant 13:00–15:00 / Snack Bar 12:00–18:00 (weather permitting).",
+              "Dinner: Main Restaurant 18:30–21:30.",
+              "Complimentary à la carte dinner (1 visit, min. 4 nights): Asador / Coryfo by Ettore Botrini / La Cantina Ristorante — reservation required.",
+              "Bars included (except premium spirits & champagne): Lobby Bar 09:00–01:00, Blue Bar 10:00–23:00, Coryfo Pool Bar 10:00–18:00, Signature Bar 10:00–18:00 (Quiet Zone), Beach Bar 10:00–18:00.",
+              "Drinks after 23:00 are chargeable. One drink per person per order. AI wristbands must be worn at all times."
+            ]},
+            {type:"subh", text:"Half Board (HB) Package"},
+            {type:"bullets", items:[
+              "Breakfast: Main Restaurant 07:00–10:30 / Asador Quiet Zone 08:00–12:00.",
+              "Dinner: Main Restaurant 18:30–21:30.",
+              "Complimentary à la carte dinner (1 visit, min. 4 nights): reservation required.",
+              "Beverages NOT included. Lunch at Main Restaurant: €25 adults / €12 children under 11 — extra charge."
+            ]}
+          ]
+        },
+        { code:"10.03", title:"Room Status Terminology",
+          scope:"All Front Office staff must know room status codes and their operational meaning.",
+          subsections:[
+            {type:"status-table"}
+          ]
+        },
+        { code:"10.04", title:"Front Office Glossary",
+          scope:"Key terms used in Front Office operations at Apollo Corfu Resort. The hotel Property Management System (PMS) is Pylon Epsilon.",
+          subsections:[
+            {type:"glossary-table"}
+          ]
+        }
+      ]
+    },
+    { id:"s11", num:"11", title:"General Guidelines",
+      sops:[
+        { code:"11.01", title:"Do's & Don'ts — Front Office",
+          scope:"Core behavioural standards for all Front Office staff.",
+          subsections:[
+            {type:"subh", text:"Always do"},
+            {type:"bullets", items:[
+              "Establish eye contact when speaking to a guest. Your full attention must be present.",
+              "Greet everyone — guests and colleagues — with a genuine smile.",
+              "Address guests and colleagues by name at every possible opportunity.",
+              "When a guest asks for directions, walk them to their destination. Pointing is not a service standard.",
+              "Follow up personally on every guest request. Contact the guest to confirm resolution.",
+              "Report all incidents in the Reception Log Book — even minor ones.",
+              "Know the hotel: its rooms, categories, facilities, restaurants, hours, and packages."
+            ]},
+            {type:"subh", text:"Never do"},
+            {type:"bullets", items:[
+              "Never tell a guest you are tired, working long hours, short-staffed, or looking forward to going home.",
+              "Never discriminate against any guest for any reason.",
+              "Never argue with a guest. The objective is resolution, not being right.",
+              "Never make promises you cannot fulfil. Offer alternatives rather than empty commitments.",
+              "Never say 'I don't know' without immediately following with 'but I will find out for you right now.'",
+              "Never discuss other guests — their behaviour, room numbers, or accounts — with another guest.",
+              "Never announce a guest's room number aloud."
+            ]}
+          ]
+        },
+        { code:"11.02", title:"Grooming Standards",
+          scope:"Personal presentation standards for all Front Office staff on duty.",
+          subsections:[
+            {type:"bullets", items:[
+              "Uniform must be clean, pressed, and complete at all times. Name badge worn and clearly visible.",
+              "Hair neat and well-groomed. Long hair tied back. No extreme colours or styles.",
+              "Hands and nails clean and well-maintained.",
+              "Fragrance used sparingly. Strong perfume or aftershave is inappropriate near guests.",
+              "Mobile phones must not be visible or used at the reception desk during duty hours.",
+              "Food and beverages must not be consumed at the reception desk.",
+              "Personal conversations between staff must not take place in the presence of guests."
+            ]}
+          ]
+        },
+        { code:"11.03", title:"Service Recovery",
+          scope:"Turning a negative guest experience into a positive one.",
+          subsections:[
+            {type:"bullets", items:[
+              "Act immediately. Every minute of delay amplifies the guest's frustration.",
+              "Take personal ownership. Do not pass the problem to another department in the guest's presence.",
+              "Apologise sincerely — once, clearly, and without over-explaining.",
+              "Offer a tangible gesture where appropriate: complimentary amenity, upgrade, waived charge.",
+              "Follow up personally to confirm the guest's satisfaction.",
+              "Log every service recovery in the Reception Log Book. Report patterns to management weekly."
+            ]},
+            {type:"note", label:"PHILOSOPHY", text:"At Apollo Corfu Resort, we do not manage complaints — we manage guest experiences. A complaint is information: it tells us exactly where we can improve. Treat every complaint with gratitude, not defensiveness."}
+          ]
+        },
+        { code:"11.04", title:"Upselling Principles",
+          scope:"Presenting hotel enhancements as genuine benefits to the guest.",
+          subsections:[
+            {type:"bullets", items:[
+              "Upselling must always be presented as a benefit to the guest — never as a sales push.",
+              "Know every room category, its features, and its differences. You cannot sell what you do not know.",
+              "Example at check-in: 'Mr./Ms. [surname], I see you have a Garden View room reserved. I do have a Superior Room available with a pool view and our CocoMat mattress — it is a wonderful upgrade for [X] per night. Would you like me to arrange that for you?'",
+              "Never upsell to a guest who is visibly stressed, in a hurry, or unhappy about another matter.",
+              "Track upselling results in the Weekly Summary."
+            ]}
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const VIP_DATA = [
+  ["VIP 1 · Platinum","Fruit platter · glass bottle water · premium white wine + cooler · special welcome gift","Cheese platter","Strawberries in chocolate","Greek sweets","SYS + Gift Bag"],
+  ["VIP 2 · Premium","Fruit platter · glass bottle water · white wine + cooler","Cheese platter","Strawberries in chocolate","Greek sweets","SYS + Gift Bag"],
+  ["VIP 3","Fruit platter · glass bottle water · white wine + cooler","—","—","—","SYS"],
+  ["VIP 4","Welcome amenity","—","—","—","SYS"]
+];
+
+const ROOM_DATA = [
+  ["STD Double Room","23–25 m²","Garden","Twin or Double","Balcony/Terrace · Sofa bed"],
+  ["Deluxe Double Room","23–25 m²","Garden","Twin or Double","Balcony/Terrace · Extra/folding bed"],
+  ["Deluxe DBL Private Pool","23–25 m²","Garden","Twin or Double","Private pool · Garden seating"],
+  ["STD Quad Room","25–27 m²","Garden","Twin or Double","Balcony/Terrace · Sofa bed · Up to 4"],
+  ["Superior Room","30 m²","Pool or Garden","Double — CocoMat","Balcony/Terrace · CocoMat mattress"],
+  ["Superior Aquapark","28 m²","Pool or Garden","Double — CocoMat","Adjacent to Aquapark"],
+  ["Junior Suite","36 m²","Garden","Twin beds","Balcony · Shower & Whirlpool bath"],
+  ["Family Room","35 m²","Garden","Twin beds","Extra beds · Up to 4 guests"],
+  ["Deluxe Junior Suite","30 m²","Garden","Double","Balcony/Terrace · Armchairs"],
+  ["Deluxe JSU Private Pool","30 m²","Garden","Double","Private pool · Garden seating"],
+  ["Deluxe Family Suite","40–45 m²","Mountain or Pool","Double + 2 extra beds","2 Bathrooms · Balcony/Terrace"],
+  ["Deluxe Family Suite Pool","40 m²","Garden","Double + 2 extra beds","Private pool · 2 Bathrooms"]
+];
+
+const STATUS_DATA = [
+  ["OCC","Occupied","A registered guest is currently in the room."],
+  ["VCI","Vacant Clean Inspected","Room cleaned, inspected, and ready for assignment and sale."],
+  ["VD","Vacant Dirty","Guest has departed. Room not yet cleaned."],
+  ["CO","Checked Out","Guest has completed check-out and departed. Room awaiting Housekeeping."],
+  ["OC","On Change","Guest has departed. Room cleaning is in progress."],
+  ["SO","Sleep Out","Guest registered; bed has not been slept in."],
+  ["DND","Do Not Disturb","Guest has requested not to be disturbed. Follow SOP-03.04."],
+  ["OOO","Out of Order","Room removed from inventory. Not sellable. Requires GM/FOM decision."],
+  ["OOS","Out of Service","Minor issue. In inventory but must not be assigned."],
+  ["LO","Lock Out","Room locked by Front Office Manager. Guest cannot re-enter without clearance."],
+  ["LCO","Late Check-Out","Guest approved to depart after 11:00. Standard charges apply beyond this time."],
+  ["VIP","Very Important Person","Guest flagged for enhanced service. Four VIP categories at Apollo Corfu."]
+];
+
+const GLOSSARY_DATA = [
+  ["FIT","Free Independent Traveller — individual booking not part of a group."],
+  ["GEX","Guest Experience team or Guest Experience Manager."],
+  ["AI","All Inclusive meal plan."],
+  ["HB","Half Board — breakfast and dinner included."],
+  ["SYS","See You Soon — farewell amenity for VIP guests before final departure."],
+  ["PMS — Pylon Epsilon","<strong>Pylon Epsilon</strong> is the Property Management System (PMS) used by the Front Office at Apollo Corfu Resort. All reservations, check-in/out, guest charges, room status, reporting, and night audit are managed in Pylon Epsilon."],
+  ["EOD","End of Day — Night Audit closing process in Pylon Epsilon."],
+  ["ADR / ARR","Average Daily Rate: total room revenue ÷ rooms sold."],
+  ["RevPAR","Revenue Per Available Room: ADR × Occupancy %."],
+  ["OTA","Online Travel Agency (e.g. Booking.com, Expedia)."],
+  ["Skipper","A guest who departs without settling their account."],
+  ["Walk-in","A guest who arrives without a prior reservation."],
+  ["No-Show","A guest with a reservation who does not arrive and has not cancelled."],
+  ["WITHOUT PREJUDICE","Legal phrase on hotel correspondence regarding incidents — protects the hotel from implied liability."]
+];
+
+const QUIZ_QUESTIONS = [
+  {q:"What is the advance deposit percentage required at the time of booking?",opts:["10% of total booking","20% of total booking","30% of total booking","First night's rate"],ans:1,exp:"The advance deposit at time of booking is 20% of the total booking amount (SOP-01.01). The full group deposit is 30%."},
+  {q:"What is the standard Apollo Corfu day use rate?",opts:["€30","€40","€50","50% of rack rate"],ans:2,exp:"The standard day use rate is a flat €50, available from 11:00 to 18:00 (SOP-01.02)."},
+  {q:"How many hours does a reservation confirmation response take?",opts:["24 hours","36 hours","48 hours","72 hours"],ans:2,exp:"All reservation requests must receive a written response within 48 hours or the next available business day (SOP-01.04)."},
+  {q:"When must the Special Offers Sheet be distributed?",opts:["By 09:00 on the day","By 15:00 on the day","By 18:00 the previous day","By 20:00 the previous day"],ans:2,exp:"The Special Offers Sheet must be distributed digitally no later than 18:00 of the previous day (SOP-03.01)."},
+  {q:"Which app should complaints be logged in?",opts:["Hotel PMS","Duty Manager App","GEX Journal and Exclusivi App","Reception CRM"],ans:2,exp:"Every complaint must be logged in the GEX Journal and Exclusivi App (SOP-03.02)."},
+  {q:"What does 'LCO' mean in room status terminology?",opts:["Late Check-Out after 12:00","Late Check-Out after 11:00","Last Confirmed Occupancy","Luggage Carried Out"],ans:1,exp:"LCO means Late Check-Out — guest approved to depart after 11:00. Standard charges apply beyond this time (Section 10.04)."},
+  {q:"How long should luggage be delivered to the room after the key is issued?",opts:["5 minutes (target) / 10 minutes (maximum)","15 minutes maximum","10 minutes target","On request only"],ans:0,exp:"All luggage must be delivered within 10 minutes of the key being issued. The Apollo Corfu target is 5 minutes (SOP-05.01)."},
+  {q:"For a group booking, when must full payment be completed?",opts:["7 days before arrival","14 days before arrival","20 days before arrival","30 days before arrival"],ans:2,exp:"Full payment must be completed no later than 20 days prior to arrival (SOP-01.03)."},
+  {q:"When picking up a suspicious person, what must you ALWAYS do first?",opts:["Call Security immediately","Ask their name and room number and verify in PMS","Ask them to leave","Contact the General Manager"],ans:1,exp:"Always begin by warmly and discreetly asking the person's name and room number, then verify against the PMS system (SOP-08.03)."},
+  {q:"Who greets VIP 1 (Platinum) guests upon arrival?",opts:["Front Office Manager","Guest Experience Manager","General Manager","Any available senior staff"],ans:2,exp:"VIP 1 Platinum guests are greeted personally by the General Manager at the entrance and escorted to their room (SOP-02.04)."},
+  {q:"What is the check-in time for Day Use rooms?",opts:["12:00","13:00","14:00","15:00"],ans:3,exp:"Day use availability is confirmed at the hotel's standard check-in time of 15:00 (SOP-01.02)."},
+  {q:"How long after a complaint resolution should you follow up with the guest?",opts:["30 minutes","1 hour","2 hours","24 hours"],ans:2,exp:"Follow up with a personal courtesy call within 2 hours of resolution (SOP-03.02)."},
+  {q:"What is the Snack Bar opening time?",opts:["10:00","11:00","12:00","13:00"],ans:2,exp:"The Snack Bar opens at 12:00 (weather permitting) per the 2026 F&B package."},
+  {q:"How many VIP categories does Apollo Corfu Resort have?",opts:["2","3","4","5"],ans:2,exp:"Apollo Corfu Resort recognises four (4) VIP categories: Platinum (VIP 1), Premium (VIP 2), VIP 3, and VIP 4."},
+  {q:"When must you NOT upsell?",opts:["When the guest has a simple room type","During check-in","When the guest is stressed, in a hurry, or unhappy","At all times — upselling is always appropriate"],ans:2,exp:"Never upsell to a guest who is visibly stressed, in a hurry, or unhappy about another matter (SOP-11.04)."},
+  {q:"What is the name of the Property Management System (PMS) used at Apollo Corfu Resort?",opts:["Opera","Protel","Pylon Epsilon","Fidelio"],ans:2,exp:"The PMS at Apollo Corfu Resort Front Office is Pylon Epsilon. All reservations, check-ins, charges, room status updates, and night audit are managed in Pylon Epsilon."}
+];
+
+const QA_KNOWLEDGE = `
+Apollo Corfu Resort Front Office SOP Manual AC-FO-SOP-01, Season 2026.
+Prepared by Petros Faitas (Front Office Manager). Approved by Philippos Stamelos (General Manager).
+
+KEY FACTS:
+- Advance deposit: 20% of total booking at time of booking. GROUP deposit: 30% of total. Full group payment 20 days before arrival.
+- Day use room: €50 flat rate, 11:00-18:00, check-in confirmed at 15:00.
+- Reservation confirmation response: 48 hours.
+- Luggage delivery target: 5 minutes (max 10 minutes after key issued).
+- Complaint follow-up: within 2 hours of resolution.
+- Log complaints in GEX Journal and Exclusivi App.
+- Duty Manager is now called Front Office Manager throughout.
+- Bellhop is now called Bellman.
+- Duty Manager Log is now called Reception Log Book.
+- Elia restaurant is now called Asador. Adults only is Quiet Zone.
+- Snack Bar opens at 12:00 (not 11:00). Late check-out is after 11:00.
+- VIP categories: 4 total (VIP 1 Platinum, VIP 2 Premium, VIP 3, VIP 4).
+- VIP 1: GM greets. VIP 2: GM or GEM. VIP 3 & 4: GEM or FOM.
+- VIP 1 & 2 before departure: SYS + Gift Bag. VIP 3 & 4: SYS only.
+- Post-departure VIP thank you: sent by Guest Experience office, signed as "the Apollo Team".
+- Special Offers Sheet distributed digitally by 18:00 previous day. Original Reception copy remains at desk.
+- Guest transportation logged in Pylon Epsilon (hotel PMS system).
+- Pylon Epsilon is the PMS (Property Management System) used by the Front Office at Apollo Corfu Resort. All reservations, check-ins, check-outs, charges, reports, and room status updates are managed in Pylon Epsilon.
+- Transportation vehicle at reception desk 10 min before pickup.
+- For suspicious persons: ALWAYS ask name and room number first and verify in Pylon Epsilon (PMS).
+- The hotel PMS is called Pylon Epsilon. Whenever procedures say "PMS", they mean Pylon Epsilon.
+- Room status CO = Checked Out (new addition).
+- SYS = See You Soon (no longer "SYS Plate").
+- Intoxicated guests: warm, hospitable approach. Offer water, suggest quiet area.
+- Payment difficulty: warm language, never say "declined", ask for another card discreetly.
+- No Foreign Exchange SOP (deleted).
+- Hotel calls doctor and pays fees when hotel is responsible for accident/incident.
+- Hotel check-in time: 15:00. Late check-out: after 11:00.
+- 4 VIP levels. AI package: one complimentary a la carte per stay (min 4 nights). HB: same.
+- GEX = Guest Experience team/manager (replaces GEM).
+`;
+
+let currentTab = 'book';
+let currentChapter = null;
+let chatHistory = [{role:'assistant', content:'I am the Apollo Front Office SOP Assistant. Ask me anything about the AC-FO-SOP-01 procedures.'}];
+let quizIdx = 0, quizScore = 0, quizAnswered = false, shuffledQuiz = [];
+
+function setTab(tab) {
+  closeSidebar();
+  currentTab = tab;
+  document.querySelectorAll('.nav-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['book','qa','quiz'][i] === tab);
+  });
+  document.getElementById('book-panel').classList.toggle('hidden', tab !== 'book');
+  document.getElementById('qa-panel').classList.toggle('hidden', tab !== 'qa');
+  document.getElementById('quiz-panel').classList.toggle('hidden', tab !== 'quiz');
+
+  if(tab === 'quiz') initQuiz();
+  updateTopbar();
+}
+
+function updateTopbar() {
+  const titles = {book: currentChapter ? SOP.chapters.find(c=>c.id===currentChapter)?.title || 'Table of Contents' : 'Table of Contents', qa:'Q&A Assistant', quiz:'Training Quiz'};
+  document.getElementById('topbar-title').textContent = titles[currentTab] || '';
+}
+
+function scrollTop() { document.getElementById('content').scrollTop = 0; }
+
+function buildSidebar() {
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = '<div class="chapter-item" onclick="showTOC()" id="toc-item"><div class="chapter-num">Start</div>Table of Contents</div>';
+  SOP.chapters.forEach(ch => {
+    const el = document.createElement('div');
+    el.className = 'chapter-item';
+    el.id = 'ch-' + ch.id;
+    el.onclick = () => showChapter(ch.id);
+    el.innerHTML = `<div class="chapter-num">Section ${ch.num}</div>${ch.title}`;
+    list.appendChild(el);
+  });
+}
+
+function showTOC() {
+  closeSidebar();
+  currentChapter = null;
+  document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('toc-item').classList.add('active');
+  document.getElementById('toc-view').classList.remove('hidden');
+  document.getElementById('chapter-view').classList.add('hidden');
+  updateTopbar();
+  if(currentTab !== 'book') setTab('book');
+}
+
+function buildTOC() {
+  const grid = document.getElementById('toc-grid');
+  grid.style.display = 'grid';
+  grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(240px, 1fr))';
+  grid.style.gap = '12px';
+  grid.id = 'toc-grid';
+  grid.innerHTML = SOP.chapters.map(ch => `
+    <div onclick="showChapter('${ch.id}')" style="background:var(--navy-3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;cursor:pointer;transition:all 0.15s;border-left:3px solid var(--blue);" onmouseover="this.style.background='var(--navy-4)'" onmouseout="this.style.background='var(--navy-3)'">
+      <div style="font-size:11px;color:var(--blue-light);font-weight:700;letter-spacing:0.1em;margin-bottom:4px;text-transform:uppercase;">Section ${ch.num}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;">${ch.title}</div>
+      <div style="font-size:12px;color:var(--text-dim);">${ch.sops.length} procedures</div>
+    </div>
+  `).join('');
+}
+
+function renderSubsection(sub) {
+  switch(sub.type) {
+    case 'steps': return `<ol class="step-list">${sub.items.map(i=>`<li>${i}</li>`).join('')}</ol>`;
+    case 'bullets': return `<ul class="bullet-list">${sub.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    case 'body': return `<p class="body-text">${sub.text}</p>`;
+    case 'subh': return `<div class="sub-heading">${sub.text}</div>`;
+    case 'note': return `<div class="note-box"><div class="note-label">${sub.label}</div><div class="note-text">${sub.text.replace(/\n/g,'<br>')}</div></div>`;
+    case 'vip-table': return `
+      <table class="vip-table">
+        <tr><th>Level</th><th>Arrival Day</th><th>Day 2</th><th>Day 3</th><th>Day 4</th><th>Before Departure</th></tr>
+        ${VIP_DATA.map(r=>`<tr>${r.map((c,i)=>i===0?`<td><strong style="color:var(--gold)">${c}</strong></td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}
+      </table>`;
+    case 'room-table': return `
+      <table class="data-table">
+        <tr><th>Category</th><th>Size</th><th>View</th><th>Bed</th><th>Key Features</th></tr>
+        ${ROOM_DATA.map(r=>`<tr>${r.map((c,i)=>i===0?`<td style="color:var(--white);font-weight:600">${c}</td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}
+      </table>`;
+    case 'status-table': return `
+      <table class="data-table">
+        <tr><th>Code</th><th>Status</th><th>Meaning</th></tr>
+        ${STATUS_DATA.map(r=>`<tr><td><span class="vip-badge badge-blue">${r[0]}</span></td><td style="color:var(--white);font-weight:600">${r[1]}</td><td>${r[2]}</td></tr>`).join('')}
+      </table>`;
+    case 'glossary-table': return `
+      <table class="data-table">
+        <tr><th>Term</th><th>Definition</th></tr>
+        ${GLOSSARY_DATA.map(r=>`<tr><td style="color:var(--gold);font-weight:600">${r[0]}</td><td>${r[1]}</td></tr>`).join('')}
+      </table>`;
+    default: return '';
+  }
+}
+
+function showChapter(id) {
+  closeSidebar();
+  if(currentTab !== 'book') setTab('book');
+  currentChapter = id;
+  document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('ch-' + id);
+  if(el) el.classList.add('active');
+  document.getElementById('toc-view').classList.add('hidden');
+  document.getElementById('chapter-view').classList.remove('hidden');
+  const ch = SOP.chapters.find(c => c.id === id);
+  if(!ch) return;
+
+  const html = `
+    <div class="book-header">
+      <div class="book-section-label">Section ${ch.num}</div>
+      <div class="book-title">${ch.title}</div>
+      <div class="book-rule"></div>
+    </div>
+    ${ch.sops.map(sop => `
+      <div class="sop-block">
+        <div class="sop-code-title">
+          <span class="sop-code">${sop.code}</span>
+          <span class="sop-title-text">${sop.title}</span>
+        </div>
+        <div class="scope-line">${sop.scope}</div>
+        ${sop.subsections.map(sub => renderSubsection(sub)).join('')}
+      </div>
+    `).join('<div style="height:1px;background:var(--border);margin:8px 0 28px;"></div>')}
+  `;
+  document.getElementById('chapter-view').innerHTML = html;
+  document.getElementById('content').scrollTop = 0;
+  updateTopbar();
+}
+
+function handleSearch(val) {
+  if(!val.trim()) { buildSidebar(); showTOC(); return; }
+  const q = val.toLowerCase();
+  const results = [];
+  SOP.chapters.forEach(ch => {
+    ch.sops.forEach(sop => {
+      const text = sop.title + ' ' + sop.scope + ' ' + sop.subsections.map(s => (s.items||[]).join(' ') + (s.text||'')).join(' ');
+      if(text.toLowerCase().includes(q)) {
+        results.push({ch, sop, text});
+      }
+    });
+  });
+  showSearchResults(val, results);
+}
+
+function showSearchResults(query, results) {
+  if(currentTab !== 'book') setTab('book');
+  document.getElementById('toc-view').classList.add('hidden');
+  document.getElementById('chapter-view').classList.remove('hidden');
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  const html = results.length === 0
+    ? `<div class="body-text" style="margin-top:40px;text-align:center;color:var(--text-dim);">No procedures found for "<strong style="color:var(--white)">${query}</strong>"</div>`
+    : `<div class="book-section-label" style="margin-bottom:16px;">${results.length} result${results.length>1?'s':''} for "${query}"</div>
+       ${results.map((r,i) => `
+         <div class="search-result">
+           <div class="sr-ref">${r.sop.code}</div>
+           <div class="sr-title" onclick="showChapter('${r.ch.id}')" style="cursor:pointer">${r.sop.title}</div>
+           <div class="sr-snippet">${r.sop.scope.replace(re,'<mark>$1</mark>')}</div>
+         </div>
+         ${i < results.length-1 ? '<div class="sr-divider"></div>' : ''}
+       `).join('')}`;
+  document.getElementById('chapter-view').innerHTML = html;
+}
+
+async function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value = '';
+
+  appendMsg('user', msg);
+  chatHistory.push({role:'user', content:msg});
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  const typingId = appendTyping();
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: `You are the Apollo Front Office SOP Assistant for Apollo Corfu Resort. You have expert knowledge of the AC-FO-SOP-01 manual. Answer questions based on this knowledge. Be concise, professional, and helpful. Reference specific SOP codes when relevant. Use bullet points for lists. Here is the knowledge base:\n\n${QA_KNOWLEDGE}`,
+        messages: chatHistory.slice(-8)
+      })
+    });
+    const data = await response.json();
+    const reply = data.content && data.content[0] ? data.content[0].text : 'I couldn\'t retrieve that information. Please check the Book section for detailed procedures.';
+    removeTyping(typingId);
+    appendMsg('bot', reply);
+    chatHistory.push({role:'assistant', content:reply});
+  } catch(e) {
+    removeTyping(typingId);
+    appendMsg('bot', 'Connection issue. Please check the Book section directly for the procedure you need.');
+  }
+  btn.disabled = false;
+}
+
+function appendMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const formatted = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>').replace(/•\s/g,'• ');
+  div.innerHTML = `
+    <div class="msg-avatar">${role==='bot'?'A':'S'}</div>
+    <div class="msg-bubble">${formatted}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+let typingCounter = 0;
+function appendTyping() {
+  const id = 'typing-' + (++typingCounter);
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = id;
+  div.innerHTML = `<div class="msg-avatar">A</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+
+function buildQuickQuestions() {
+  const qs = [
+    "What is the VIP 1 amenity programme?",
+    "How do I handle a guest complaint?",
+    "What is the group deposit requirement?",
+    "When must the Special Offers Sheet be sent?",
+    "What does VCI mean?",
+    "How do I handle a payment difficulty?",
+    "What are the AI package hours?",
+    "What is the check-in time?"
+  ];
+  document.getElementById('quick-qs').innerHTML = qs.map(q =>
+    `<button class="qq-btn" onclick="askQuick('${q}')">${q}</button>`
+  ).join('');
+}
+
+function askQuick(q) {
+  document.getElementById('chat-input').value = q;
+  sendMsg();
+}
+
+function initQuiz() {
+  shuffledQuiz = [...QUIZ_QUESTIONS].sort(() => Math.random() - 0.5).slice(0, 10);
+  quizIdx = 0; quizScore = 0; quizAnswered = false;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const panel = document.getElementById('quiz-panel');
+  if(quizIdx >= shuffledQuiz.length) {
+    const pct = Math.round((quizScore / shuffledQuiz.length) * 100);
+    const grade = pct >= 80 ? '✓ Passed' : '✗ Needs Review';
+    const gradeColor = pct >= 80 ? '#10B981' : '#F59E0B';
+    panel.innerHTML = `
+      <div class="quiz-complete">
+        <div class="quiz-final-score">${pct}%</div>
+        <div class="quiz-final-label">${quizScore} / ${shuffledQuiz.length} correct</div>
+        <div style="font-size:14px;font-weight:600;color:${gradeColor};margin-bottom:24px;">${grade}</div>
+        ${pct < 80 ? '<p style="font-size:13px;color:var(--text-dim);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;">Review the Book sections for any areas you found challenging, then try again.</p>' : '<p style="font-size:13px;color:var(--text-dim);margin-bottom:24px;">Excellent work. You know the Apollo Front Office procedures well.</p>'}
+        <button class="quiz-restart" onclick="initQuiz()">Try Again</button>
+      </div>
+    `;
+    return;
+  }
+  const q = shuffledQuiz[quizIdx];
+  panel.innerHTML = `
+    <div class="quiz-score-bar">
+      <div><div class="score-label">Question</div><div class="score-val">${quizIdx+1} / ${shuffledQuiz.length}</div></div>
+      <div style="text-align:right"><div class="score-label">Score</div><div class="score-val">${quizScore}</div></div>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizIdx/shuffledQuiz.length)*100}%"></div></div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-source">AC-FO-SOP-01 · Season 2026</div>
+    <div class="quiz-options" id="quiz-opts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+    </div>
+    <div id="quiz-feedback"></div>
+    <button class="quiz-next hidden" id="quiz-next" onclick="nextQuestion()">Next question →</button>
+  `;
+}
+
+function answerQuiz(idx) {
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const q = shuffledQuiz[quizIdx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.disabled = true);
+  opts[q.ans].classList.add('correct');
+  if(idx !== q.ans) opts[idx].classList.add('wrong');
+  else quizScore++;
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'quiz-feedback ' + (idx === q.ans ? 'ok' : 'bad');
+  fb.textContent = (idx === q.ans ? '✓ Correct. ' : '✗ Incorrect. ') + q.exp;
+  document.getElementById('quiz-next').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  quizIdx++;
+  quizAnswered = false;
+  renderQuiz();
+}
+
+
+const PIN_CORRECT = '0359';
+let pinEntry = '';
+
+function pinKey(k) {
+  if(pinEntry.length >= 4) return;
+  pinEntry += k;
+  updateDots();
+  if(pinEntry.length === 4) checkPin();
+}
+function pinDel() {
+  pinEntry = pinEntry.slice(0,-1);
+  updateDots();
+  document.getElementById('pin-error').textContent = '';
+}
+function updateDots() {
+  for(let i=0;i<4;i++){
+    document.getElementById('d'+i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+function checkPin() {
+  if(pinEntry === PIN_CORRECT) {
+    document.getElementById('pin-screen').classList.add('hidden');
+    sessionStorage.setItem('afo_auth','1');
+  } else {
+    document.getElementById('pin-error').textContent = 'Incorrect PIN. Please try again.';
+    pinEntry = '';
+    updateDots();
+    const box = document.querySelector('.pin-box');
+    box.style.animation = 'none';
+    setTimeout(()=>{ box.style.animation = 'shake 0.4s ease'; },10);
+  }
+}
+document.addEventListener('keydown', e => {
+  if(document.getElementById('pin-screen').classList.contains('hidden')) return;
+  if(e.key>='0'&&e.key<='9') pinKey(e.key);
+  if(e.key==='Backspace') pinDel();
+});
+if(sessionStorage.getItem('afo_auth')==='1'){
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('pin-screen').classList.add('hidden');
+  });
+}
+
+buildSidebar();
+buildTOC();
+buildQuickQuestions();
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('visible');
+  document.body.style.overflow = sb.classList.contains('open') ? 'hidden' : '';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+</script>
+</body>
+</html>
